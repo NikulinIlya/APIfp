@@ -60,6 +60,10 @@ public class Class1
             }
         }*/
 
+        /*public static IfThen<T> If(Func<dynamic, Boolean> cond)
+{
+    return new IfThen<T>(cond);
+}*/
     }
     public Class1()
 	{

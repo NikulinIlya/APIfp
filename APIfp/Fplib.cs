@@ -24,21 +24,29 @@ namespace APIfp
             return list;
         }
 
-        public IEnumerable<U> Map1<U>(IEnumerable<T> list, Func<T, U> res_f)
+        /*public IEnumerable<U> Map2<U>(IEnumerable<T> list, Func<T, U> res_f)
+        {
+            foreach (var item in list)
+                yield return res_f(item);
+        }*/
+
+        public IEnumerable<U> Map<U>(Func<T, U> res_f)
         {
             foreach (var item in list)
                 yield return res_f(item);
         }
 
-        public IEnumerable<T> Any(IEnumerable<T> list, Func<T, bool> filter, Func<T, T> res_f)
+        public IEnumerable<T> Any(Func<T, bool> filter, Func<T, T> res_f) //IEnumerable<T> list, 
         {
             var res = from n in list
                       where (filter(n))
                       select n;
-            return Map1(res, res_f);
+            foreach (var item in list)
+                yield return res_f(item);
+            //return Map1(res, res_f);
         }
 
-        public IEnumerable<T> Any2(IEnumerable<T> list, Func<T, bool> filter, Func<T, T> res_f)
+        /*public IEnumerable<T> Any2(Func<T, bool> filter, Func<T, T> res_f) //IEnumerable<T> list, 
         {
             var res = Map1(list, res_f);
             res = from n in res
@@ -47,7 +55,7 @@ namespace APIfp
 
             foreach (var item in res)
                 yield return item;
-        }
+        }*/
 
         public IEnumerable<T> JoinValues(List<T> listAdd)
         {
@@ -77,6 +85,11 @@ namespace APIfp
                 return firstValue;
             return default(T);
         }
+
+        public static Func<T, U> Recurse<U>(Func<T, U> f)
+        {
+            return x => f(x);
+        }
     }
 
     class CDClibN<T>
@@ -91,35 +104,22 @@ namespace APIfp
         {
             return list;
         }
+
+        public IEnumerable<U> FlatMap<U>(Func<T, U> res_f) //List<List<T>> list, 
+        {
+            IEnumerable<T> vls = new List<T>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                vls = vls.Concat(list[i]);
+            }
+            foreach (var item in vls)
+                yield return res_f(item); //expression
+        }
     }
 
-    /*public static Func<T, V> Thenn<T, U, V>(this Func<U, V> f, Func<T, U> g) //compose
+    /*public static class Map
     {
-        return x => f(g(x));
-    }
 
-    public static Func<U, V> Recurse<U, V>( Func<U, V> f)
-    {
-        return x => f(x);
-    }
-
-    public static IEnumerable<int> Zip(List<int> list1, List<int> list2)//WRONG!
-    {
-        //var vls = new List<int>(); 
-        var vls = list1.Zip(list2, (first, second) => first + second);
-        return vls;
-    }
-    //public static IEnumerable<int> JoinValues(List<int> list1, List<int> list2)
-    public static IEnumerable<T> JoinValues<T>(List<T> list1, List<T> list2)
-    {
-        //var vls = list1.Concat(list2);
-        return list1.Concat(list2);
-    }*/
-
-
-    public static class Map
-    {
-        //public static IEnumerable<int> Map(IEnumerable<int> s, Func<int, int> f)
         public static IEnumerable<U> Map1<T, U>(this IEnumerable<T> list, Func<T, U> res_f)
         {
             foreach (var item in list)
@@ -169,33 +169,14 @@ namespace APIfp
             if (containsValue)
                 return firstValue;
             return default(T);
-
-
         }
-
-        /*public static Func<T3, T1> my_chain<T1, T2, T3>(Func<T2, T1> f1, Func<T3, T2> f2)
-        {
-            return (x => f2(f1(x)));
-        }*/
 
         public static Func<T1, T3> Compose<T1, T2, T3>(this Func<T2, T3> f, Func<T1, T2> g)
         {
             return x => f(g(x));
         }
-        
-        //public static IEnumerable<int> FlatMap(List<List<int>> list, Func<int, int> f)
-        /*public static IEnumerable<U> FlatMap<T,U>(List<List<T>> list, Func<T, U> f)
-        {
-            IEnumerable<T> vls = new List<T>();
-            for (int i = 0; i < list.Count; i++)
-            {
-                vls = vls.Concat(list[i]);
-            }
-            return Map1(vls, f); //expression
-        }*/
-    }
+    }*/
 
-    //if
     class Expression<T>
     {
         public static dynamic Value(List<T> arg1, params List<T>[] lists)
@@ -213,11 +194,6 @@ namespace APIfp
                 return new CDClibN<T>(list);
             }
         }
-
-        /*public static IfThen<T> If(Func<dynamic, Boolean> cond)
-        {
-            return new IfThen<T>(cond);
-        }*/
     }
 
 
@@ -241,7 +217,7 @@ namespace APIfp
             vls.Add(2);
             //vls3.Add(vls);
 
-            vls1 = Map.Any(vls, x=> x>=2, x => x + x);
+            /*vls1 = Map.Any(vls, x=> x>=2, x => x + x);
             foreach (var item in vls1)
                 Console.Write(item + " ");
             Console.WriteLine();
@@ -254,18 +230,18 @@ namespace APIfp
                 Console.Write(item+" ");
             Console.WriteLine();
 
-            var f1 = new Func<int, double>(x => x / x);
-            var g1 = new Func<double, double>(x =>  x);
+            var f1 = new Func<int, int>(x => x / x);
+            var g1 = new Func<int, int>(x =>  x+x);
             var h = f1.Compose(g1);
-            var vs = new List<double>();
-            IEnumerable<double> vs1 = new List<double>();
-            vs.Add(2.5);
-            vs.Add(2.4);
+            var vs = new List<int>();
+            IEnumerable<int> vs1 = new List<int>();
+            vs.Add(2);
+            vs.Add(2);
             vs.Add(3);
             vs1 = Map.Map1(vs, h);
             foreach (var item in vs1)
                 Console.Write(item + " ");
-            Console.WriteLine();
+            Console.WriteLine();*/
             //vls1 = Map.Map2(vls, Map.compose(x => x + x, y => y * y));
             //f = Map.Thenn(x => x + x, x => x * x);
             /*vls = vls1.ToList();
