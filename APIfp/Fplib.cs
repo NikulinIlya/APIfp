@@ -36,14 +36,33 @@ namespace APIfp
                 yield return res_f(item);
         }
 
-        public IEnumerable<T> Any(Func<T, bool> filter, Func<T, T> res_f) //IEnumerable<T> list, 
+        public IEnumerable<T> All(List<Func<T, T>> list_f)
         {
-            var res = from n in list
+            var res = list.Select(list_f[0]);
+            for (int i=1; i<list_f.Count; i++)
+            {
+                res = res.Select(list_f[i]);
+            }
+            foreach (var item in res)
+                yield return item;
+        }
+                //List<T> list1;
+        /*foreach (var item in res)
+             vls.Add(item);*/
+        //return res;
+        /*//vls.Clear();
+        foreach (var item in vls)
+            vls.Add(list_f[i](item));*/
+
+
+        public IEnumerable<T> Any(Func<T, bool> filter, List<Func<T, T>> list_f)
+        {
+            var res = All(list_f);
+            res = from n in list
                       where (filter(n))
                       select n;
-            foreach (var item in list)
-                yield return res_f(item);
-            //return Map1(res, res_f);
+            foreach (var item in res)
+                yield return item;
         }
 
         /*public IEnumerable<T> Any2(Func<T, bool> filter, Func<T, T> res_f) //IEnumerable<T> list, 
@@ -115,6 +134,69 @@ namespace APIfp
             foreach (var item in vls)
                 yield return res_f(item); //expression
         }
+    }
+
+    class CDClibTu<T>
+    {
+        //List<Tuple<List<T>>> list1 = new List<Tuple<List<T>>>();
+        //List<List<Tuple<object>>> list = new List<List<Tuple<object>>>();
+        List<Tuple<object>> list1 = new List<Tuple<object>>();
+        List<Tuple<object, object>> list2 = new List<Tuple<object, object>>();
+        List<Tuple<object, object, object>> list3 = new List<Tuple<object, object, object>>();
+        List<Tuple<object, object, object, object>> list4 = new List<Tuple<object, object, object, object>>();
+        List<Tuple<object, object, object, object, object>> list5 = new List<Tuple<object, object, object, object, object>>();
+        List<Tuple<object, object, object, object, object, object>> list6 = new List<Tuple<object, object, object, object, object, object>>();
+        List<Tuple<object, object, object, object, object, object, object>> list7 = new List<Tuple<object, object, object, object, object, object, object>>();
+        List<Tuple<object, object, object, object, object, object, object, object>> list8 = new List<Tuple<object, object, object, object, object, object, object, object>>();
+        public CDClibTu(ArrayList listArgs)
+        {
+
+            var t = new Object();
+            switch (listArgs.Count)
+            {
+                case 1:
+                    //t = new Tuple<object>(listArgs[0]);
+                    list1.Add(new Tuple<object>(listArgs[0]));
+                    break;
+                case 2:
+                    //t = new Tuple<object, object>(listArgs[0], listArgs[1]);
+                    list2.Add(new Tuple<object, object>(listArgs[0], listArgs[1]));
+                    break;
+                case 3:
+                    list3.Add(new Tuple<object, object, object>(listArgs[0], listArgs[1], listArgs[2]));
+                    break;
+                case 4:
+                    list4.Add(new Tuple<object, object, object, object>(listArgs[0], listArgs[1], listArgs[2], listArgs[3]));
+                    break;
+                case 5:
+                    list5.Add(new Tuple<object, object, object, object, object>(listArgs[0], listArgs[1], listArgs[2], listArgs[3], listArgs[4]));
+                    break;
+                case 6:
+                    list6.Add(new Tuple<object, object, object, object, object, object>(listArgs[0], listArgs[1], listArgs[2], listArgs[3], listArgs[4], listArgs[5]));
+                    break;
+                case 7:
+                    list7.Add(new Tuple<object, object, object, object, object, object, object>(listArgs[0], listArgs[1], listArgs[2], listArgs[3], listArgs[4], listArgs[5], listArgs[6]));
+                    break;
+                case 8:
+                    list8.Add(new Tuple<object, object, object, object, object, object, object, object>(listArgs[0], listArgs[1], listArgs[2], listArgs[3], listArgs[4], listArgs[5], listArgs[6], listArgs[7]));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public List<Tuple<object, object>> Zip()
+        {
+            List<Tuple<object, object>> listRes = new List<Tuple<object, object>>();
+            return listRes;
+        }
+
+        public List<Tuple<object, object>> Unzip()
+        {
+            List<Tuple<object, object>> listRes = new List<Tuple<object, object>>();
+            return listRes;
+        }
+    }
     }
 
     /*public static class Map
@@ -206,6 +288,7 @@ namespace APIfp
             var vls2 = new List<int>();
             var vls3 = new List<List<int>>();
             IEnumerable<int> vls1 = new List<int>();
+            //var vls = new List<int>();
             //IEnumerable<int> vls2 = new List<int>();
             //ArrayList al1 = new ArrayList();
             //ArrayList vls1 = new ArrayList(); // IEnumerable
