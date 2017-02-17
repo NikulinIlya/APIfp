@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using APIfp;
+using System.Threading;
 
 namespace WebGUI
 {
@@ -18,7 +19,19 @@ namespace WebGUI
 
         public void Handler(string formula)
         {
-            
+            //parser
+            var formulaArgs = new List<string>();
+            string arg = "";
+            for (int i =0;i< formula.Length; i++)
+            {
+                if (!formula[i].Equals(".")) arg += formula[i];
+                else
+                {
+                    formulaArgs.Add(arg);
+                    arg = "";
+                }
+            }
+
             Result.Value = formula;
         }
     }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace APIfp
 {
@@ -13,7 +14,8 @@ namespace APIfp
     public class CDClib<T>
     {
         List<T> list;
-
+        public Thread Thrd;
+        public CDClib() { }
         public CDClib(List<T> l)
         {
             list = l;
@@ -111,7 +113,7 @@ namespace APIfp
         }
     }
 
-    class CDClibN<T>
+    class CDClibN<T> : CDClib<T>
     {
         List<List<T>> list;
         public CDClibN(List<List<T>> a)
@@ -119,10 +121,10 @@ namespace APIfp
             list = a;
         }
 
-        public List<List<T>> ToList()
+        /*public List<List<T>> ToList()
         {
             return list;
-        }
+        }*/
 
         public IEnumerable<U> FlatMap<U>(Func<T, U> res_f) //List<List<T>> list, 
         {
@@ -135,10 +137,45 @@ namespace APIfp
                 yield return res_f(item); //expression
         }
 
+        public List<List<T>> Zip()
+        {
+            List<List<T>> listRes = new List<List<T>>();
+            int n = list[0].Count();
+            for (int i = 1; i < list.Count(); i++)
+            {
+                if (list[i].Count() < n) n = list[i].Count();
+            }
+
+            for (int i = 0; i < n; i++)
+            {
+                List<T> listM = new List<T>();
+                for (int j = 0; j < list.Count(); j++)
+                {
+                    listM.Add(list[j][i]);
+                }
+                listRes.Add(listM);
+            }
+            return listRes;
+        }
+
+        public List<List<T>> Unzip()
+        {
+            List<List<T>> listRes = new List<List<T>>();
+            int n = list[0].Count();
+            for (int i = 0; i < n; i++)
+            {
+                List<T> listM = new List<T>();
+                for (int j = 0; j < list.Count(); j++)
+                {
+                    listM.Add(list[j][i]);
+                }
+                listRes.Add(listM);
+            }
+            return listRes;
+        }
 
 
-
-    }
+        }
 
     /*class CDClibTu<T>
     {
