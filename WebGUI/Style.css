@@ -1,0 +1,14 @@
+﻿#form1 label {
+    width: 120px;
+    display: inline-block;
+}
+#form1 input {
+    margin: 2px;
+    margin-left: 4px;
+    width: 300px;
+}
+
+button[type=submit] {
+    margin-top: 15px;
+    padding: 5px;
+}

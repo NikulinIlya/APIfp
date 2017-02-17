@@ -134,9 +134,13 @@ namespace APIfp
             foreach (var item in vls)
                 yield return res_f(item); //expression
         }
+
+
+
+
     }
 
-    class CDClibTu<T>
+    /*class CDClibTu<T>
     {
         //List<Tuple<List<T>>> list1 = new List<Tuple<List<T>>>();
         //List<List<Tuple<object>>> list = new List<List<Tuple<object>>>();
@@ -196,8 +200,8 @@ namespace APIfp
             List<Tuple<object, object>> listRes = new List<Tuple<object, object>>();
             return listRes;
         }
-    }
-    }
+    }*/
+    
 
     /*public static class Map
     {
@@ -276,6 +280,11 @@ namespace APIfp
                 return new CDClibN<T>(list);
             }
         }
+
+        /*public static IfThen<R> If<R>(IFunctionType<Boolean> cond)
+        {
+            return new IfThen<R>(cond);
+        }*/
     }
 
 
